@@ -13,3 +13,5 @@ openvpn采用的是经过重新编译的版本，可以对流量进行混淆，�
 https://github.com/dc3l1ne/repo/blob/master/openvpn-obfs/openvpn-2.3.6-obfs.patch
 
 配置文件上传到服务端是使用的scp，所以请在本地配置和远端配置好 私钥/公钥 以实现免密码登录
+
+还有需求就请自己修改一下shell吧，这份shell代码都是简单易懂的最low的那种。
