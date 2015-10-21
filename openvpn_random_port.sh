@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-ip=
+ip=133.130.103.118
 sshuser=root
 sshport=122
 serverip=192.168.2.1
@@ -75,20 +75,16 @@ then
 fi
 while true
 do
-if [ -z "$serverip" ]
-then
-	echo Please identify your VPN Server address
-	exit
-else
 	ping=`ping -c 5 $serverip |grep received |cut -b 24`
 	if [ $ping -eq 0 ]
 	then
 		((count+=1))
 		if [ $count -lt 3 ]
 		then
-			sleep 5
 			restart_vpn_client
+			sleep 5
 			ping=`ping -c 5 $serverip |grep received |cut -b 24`
+			echo $ping
 		else
 			while true
 			do
@@ -98,6 +94,7 @@ else
 			restart_vpn_client
 			sleep 5
 			ping=`ping -c 5 $serverip |grep received |cut -b 24`
+			echo $ping
 			if [ $ping -eq 0 ]
 			then
 				sleep 5
@@ -114,6 +111,7 @@ else
 		then
 			sleep 5
 		else
+			echo $ping
 			date=`date "+%Y-%m-%d %T"`
 			echo "VPN Restarted! $date" >> /mnt/vpnlogs
 			echo "VPN Restarted! $date"
@@ -123,6 +121,5 @@ else
 		echo "VPN is OK   $date" >> /mnt/vpnlogs
 		echo "VPN is OK   $date"
 	fi
-fi
-sleep 60
+sleep 3
 done
