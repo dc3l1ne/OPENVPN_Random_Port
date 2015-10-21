@@ -3,10 +3,10 @@
 ip=
 sshuser=root
 sshport=122
-serverip=192.168.2.1
-clientip=192.168.2.2
+serverip=192.168.2.1 #VPN服务端地址
+clientip=192.168.2.2 #VPN客户端地址
 keyfile=s.key
-salt=x3KV8lBxynZZ5C2cUmZZpDIgjJ0x2BclvvAZkgBKHn7lB1joDGcZg8d8B1xmVySt
+salt=x3KV8lBxynZZ5C2cUmZZpDIgjJ0x2BclvvAZkgBKHn7lB1joDGcZg8d8B1xmVySt #混淆salt
 ###
 function random_port_generator (){
 while true
@@ -47,14 +47,14 @@ fi
 break
 done
 echo "Port change to:$rad"
-echo "Port change to:$rad" >> /mnt/sda2/logs/vpnlogs
+echo "Port change to:$rad" >> /mnt/vpnlogs
 }
 function restart_vpn_server (){
 			scp -P $sshport server.conf $sshuser@$ip:/etc/openvpn
 			ssh -p $sshport $sshuser@$ip "killall openvpn"
 			ssh -p $sshport $sshuser@$ip "openvpn --cd /etc/openvpn --config server.conf >> /dev/null &"
 			date=`date "+%Y-%m-%d %T"`
-			echo "VPN down!Server Restarting.....  $date" >> /mnt/sda2/logs/vpnlogs
+			echo "VPN down!Server Restarting.....  $date" >> /mnt/vpnlogs
 			echo "VPN down!Server Restarting.....  $date"
 }
 function restart_vpn_client (){
@@ -62,7 +62,7 @@ function restart_vpn_client (){
 			cp client.conf /etc/openvpn
 			openvpn --cd /etc/openvpn --config client.conf >> /dev/null &
 			date=`date "+%Y-%m-%d %T"`
-			echo "VPN down!Client Restarting.....  $date" >> /mnt/sda2/logs/vpnlogs
+			echo "VPN down!Client Restarting.....  $date" >> /mnt/vpnlogs
 			echo "VPN down!Client Restarting.....  $date"
 }
 vpn_status=`ifconfig |grep $clientip`
@@ -75,12 +75,12 @@ then
 fi
 while true
 do
-if [ $# -ne 1 ]
+if [ -z "$serverip" ]
 then
-	echo Please identify your VPN Server address 
+	echo Please identify your VPN Server address
 	exit
 else
-	ping=`ping -c 5 $1 |grep received |cut -b 24`
+	ping=`ping -c 5 $serverip |grep received |cut -b 24`
 	if [ $ping -eq 0 ]
 	then
 		((count+=1))
@@ -88,36 +88,36 @@ else
 		then
 			sleep 5
 			restart_vpn_client
-			ping=`ping -c 5 $1 |grep received |cut -b 24`
+			ping=`ping -c 5 $serverip |grep received |cut -b 24`
 		else
 			random_port_generator
 			restart_vpn_server
 			restart_vpn_client
 			sleep 5
-			ping=`ping -c 5 $1 |grep received |cut -b 24`
+			ping=`ping -c 5 $serverip |grep received |cut -b 24`
 			if [ $ping -eq 0 ]
 			then
 				sleep 5
 			else
 				date=`date "+%Y-%m-%d %T"`
-				echo "VPN Restarted! Port:$rad $date" >> /mnt/sda2/logs/vpnlogs
+				echo "VPN Restarted! Port:$rad $date" >> /mnt/vpnlogs
 				echo "VPN Restarted! Port:$rad $date"
 				x=1
 			fi
 
-		ping=`ping -c 5 $1 |grep received |cut -b 24`
+		ping=`ping -c 5 $serverip |grep received |cut -b 24`
 		if [ $ping -eq 0 ]
 		then
 			sleep 5
 		else
 			date=`date "+%Y-%m-%d %T"`
-			echo "VPN Restarted! $date" >> /mnt/sda2/logs/vpnlogs
+			echo "VPN Restarted! $date" >> /mnt/vpnlogs
 			echo "VPN Restarted! $date"
 		fi
 		fi
 	else
 		date=`date "+%Y-%m-%d %T"`
-		echo "VPN is OK   $date" >> /mnt/sda2/logs/vpnlogs
+		echo "VPN is OK   $date" >> /mnt/vpnlogs
 		echo "VPN is OK   $date"
 	fi
 fi
