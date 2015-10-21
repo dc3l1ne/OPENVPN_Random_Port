@@ -3,10 +3,10 @@
 ip=
 sshuser=root
 sshport=122
-serverip=192.168.2.1 #VPN服务端地址
-clientip=192.168.2.2 #VPN客户端地址
+serverip=192.168.2.1
+clientip=192.168.2.2
 keyfile=s.key
-salt=x3KV8lBxynZZ5C2cUmZZpDIgjJ0x2BclvvAZkgBKHn7lB1joDGcZg8d8B1xmVySt #混淆salt
+salt=x3KV8lBxynZZ5C2cUmZZpDIgjJ0x2BclvvAZkgBKHn7lB1joDGcZg8d8B1xmVySt
 ###
 function random_port_generator (){
 while true
@@ -90,8 +90,11 @@ else
 			restart_vpn_client
 			ping=`ping -c 5 $serverip |grep received |cut -b 24`
 		else
+			while true
+			do
 			random_port_generator
 			restart_vpn_server
+			sleep 5
 			restart_vpn_client
 			sleep 5
 			ping=`ping -c 5 $serverip |grep received |cut -b 24`
@@ -103,9 +106,10 @@ else
 				echo "VPN Restarted! Port:$rad $date" >> /mnt/vpnlogs
 				echo "VPN Restarted! Port:$rad $date"
 				x=1
+				break
 			fi
-
-		ping=`ping -c 5 $serverip |grep received |cut -b 24`
+			done
+		fi
 		if [ $ping -eq 0 ]
 		then
 			sleep 5
@@ -113,7 +117,6 @@ else
 			date=`date "+%Y-%m-%d %T"`
 			echo "VPN Restarted! $date" >> /mnt/vpnlogs
 			echo "VPN Restarted! $date"
-		fi
 		fi
 	else
 		date=`date "+%Y-%m-%d %T"`
