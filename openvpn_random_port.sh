@@ -94,7 +94,6 @@ do
 			restart_vpn_client
 			sleep 5
 			ping=`ping -c 5 $serverip |grep received |cut -b 24`
-			echo $ping
 			if [ $ping -eq 0 ]
 			then
 				sleep 5
@@ -111,7 +110,6 @@ do
 		then
 			sleep 5
 		else
-			echo $ping
 			date=`date "+%Y-%m-%d %T"`
 			echo "VPN Restarted! $date" >> /mnt/vpnlogs
 			echo "VPN Restarted! $date"
