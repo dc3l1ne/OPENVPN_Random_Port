@@ -1,6 +1,6 @@
 #!/bin/bash
 ###
-ip=133.130.103.118
+ip=
 sshuser=root
 sshport=122
 serverip=192.168.2.1
@@ -75,6 +75,7 @@ then
 			restart_vpn_server
 			sleep 1
 			restart_vpn_client
+			sleep 1
 	fi
 fi
 vpn_status=`ifconfig |grep $clientip`
@@ -91,7 +92,7 @@ do
 	if [ $ping -eq 0 ]
 	then
 		((count+=1))
-		if [ $count -lt 3 ]
+		if [ $count -lt 4 ]
 		then
 			restart_vpn_client
 			sleep 5
