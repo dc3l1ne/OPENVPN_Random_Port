@@ -6,8 +6,8 @@ sshport=122
 serverip=192.168.2.1
 clientip=192.168.2.2
 keyfile=s.key
-app=openvpn
-salt=zM4yI80mk
+app='openvpn2.3.6'
+salt='zM0miepRzgSk4yI8'
 ###
 function random_port_generator (){
 while true
@@ -28,6 +28,7 @@ redirect-gateway def1
 obfs-salt $salt
 obfs-padlen 20
 mssfix 1386
+;scramble obfuscate $salt
 EOF
 cat>server.conf<<EOF
 dev tun
@@ -46,6 +47,7 @@ push "dhcp-option DNS 8.8.8.8"
 obfs-salt $salt
 obfs-padlen 20
 mssfix 1386
+;scramble obfuscate $salt
 ;tun-mtu 7500
 EOF
 fi
@@ -56,8 +58,8 @@ echo "Port change to:$rad" >> /mnt/vpnlogs
 }
 function restart_vpn_server (){
 			echo Uploading file....
-			scp -P $sshport server.conf $sshuser@$ip:/etc/openvpn
 			ssh -p $sshport $sshuser@$ip "killall $app"
+			scp -P $sshport server.conf $sshuser@$ip:/etc/openvpn
 			ssh -p $sshport $sshuser@$ip "$app --cd /etc/openvpn --config server.conf >> /dev/null &"
 			date=`date "+%Y-%m-%d %T"`
 			echo "Server Restarting.....  $date" >> /mnt/vpnlogs
