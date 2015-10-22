@@ -17,3 +17,7 @@ https://github.com/dc3l1ne/repo/blob/master/openvpn-obfs/openvpn-2.3.6-obfs.patc
 还有需求就请自己修改一下shell吧，这份shell代码都是简单易懂的最low的那种。
 
 由于使用了killall命令，如果服务器或客户端运行了多个vpn实例请勿使用该脚本！
+
+后面如果带上999参数，代表本次立即生成一个新端口
+
+./port 999
