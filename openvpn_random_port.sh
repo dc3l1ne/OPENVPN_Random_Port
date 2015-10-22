@@ -6,7 +6,8 @@ sshport=122
 serverip=192.168.2.1
 clientip=192.168.2.2
 keyfile=s.key
-salt=x3KV8lBxynZZ5C2cU
+app=openvpn
+salt=zM4yI80mk
 ###
 function random_port_generator (){
 while true
@@ -23,8 +24,10 @@ secret $keyfile
 comp-lzo
 verb 3
 redirect-gateway def1
-tun-mtu 7500
+;tun-mtu 7500
 obfs-salt $salt
+obfs-padlen 20
+mssfix 1386
 EOF
 cat>server.conf<<EOF
 dev tun
@@ -41,7 +44,9 @@ verb 3
 push "redirect-gateway def1"
 push "dhcp-option DNS 8.8.8.8"
 obfs-salt $salt
-tun-mtu 7500
+obfs-padlen 20
+mssfix 1386
+;tun-mtu 7500
 EOF
 fi
 break
@@ -52,16 +57,16 @@ echo "Port change to:$rad" >> /mnt/vpnlogs
 function restart_vpn_server (){
 			echo Uploading file....
 			scp -P $sshport server.conf $sshuser@$ip:/etc/openvpn
-			ssh -p $sshport $sshuser@$ip "killall openvpn"
-			ssh -p $sshport $sshuser@$ip "openvpn --cd /etc/openvpn --config server.conf >> /dev/null &"
+			ssh -p $sshport $sshuser@$ip "killall $app"
+			ssh -p $sshport $sshuser@$ip "$app --cd /etc/openvpn --config server.conf >> /dev/null &"
 			date=`date "+%Y-%m-%d %T"`
 			echo "Server Restarting.....  $date" >> /mnt/vpnlogs
 			echo "Server Restarting.....  $date"
 }
 function restart_vpn_client (){
-			killall openvpn
+			killall $app
 			cp client.conf /etc/openvpn
-			openvpn --cd /etc/openvpn --config client.conf >> /dev/null &
+			$app --cd /etc/openvpn --config client.conf >> /dev/null &
 			date=`date "+%Y-%m-%d %T"`
 			echo "Client Restarting.....  $date" >> /mnt/vpnlogs
 			echo "Client Restarting.....  $date"
@@ -82,7 +87,7 @@ vpn_status=`ifconfig |grep $clientip`
 if [ -z "$vpn_status" ]
 then
 	echo NO VPN Running,Starting VPN....
-	openvpn --cd /etc/openvpn --config client.conf >> /dev/null &
+	$app --cd /etc/openvpn --config client.conf >> /dev/null &
 	sleep 1
 	echo VPN is running
 fi
