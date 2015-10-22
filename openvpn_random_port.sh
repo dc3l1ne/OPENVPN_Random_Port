@@ -1,12 +1,12 @@
 #!/bin/bash
 ###
-ip=
+ip=133.130.103.118
 sshuser=root
 sshport=122
 serverip=192.168.2.1
 clientip=192.168.2.2
 keyfile=s.key
-salt=x3KnZV8lBxynZZ5C2cU
+salt=x3KV8lBxynZZ5C2cU
 ###
 function random_port_generator (){
 while true
@@ -96,7 +96,6 @@ do
 			restart_vpn_client
 			sleep 5
 			ping=`ping -c 5 $serverip |grep received |cut -b 24`
-			echo $ping
 		else
 			while true
 			do
@@ -123,7 +122,6 @@ do
 		then
 			sleep 5
 		else
-			echo $ping
 			date=`date "+%Y-%m-%d %T"`
 			echo "VPN Restarted! $date" >> /mnt/vpnlogs
 			echo "VPN Restarted! $date"
