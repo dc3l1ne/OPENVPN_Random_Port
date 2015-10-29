@@ -25,7 +25,7 @@ comp-lzo
 verb 3
 redirect-gateway def1
 ;tun-mtu 7500
-;scramble $salt
+scramble obfuscate <$salt>
 EOF
 cat>server.conf<<EOF
 dev tun
@@ -41,7 +41,7 @@ status openvpn-status.log
 verb 3
 push "redirect-gateway def1"
 push "dhcp-option DNS 8.8.8.8"
-;scramble $salt
+scramble obfuscate <$salt>
 ;tun-mtu 7500
 EOF
 fi
