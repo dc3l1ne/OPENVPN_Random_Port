@@ -6,11 +6,9 @@
 
 首先请在文件内定义VPN服务器的外网ip
 
-openvpn采用的是经过重新编译的版本，可以对流量进行混淆，采用的patch
+openvpn采用的是经过重新编译的版本，可以对流量进行xor加密，采用的patch
 
-https://github.com/dc3l1ne/repo/blob/master/openvpn-obfs/openvpn-2.3.6-obfs.patch
-
-如果是普通的OPENVPN请删掉开头的salt=x3KV8lBxynZZ5C2cUmZZ...和文中的2处obfs-salt $salt
+https://github.com/clayface/openvpn_xorpatch/blob/master/openvpn_xor.patch
 
 配置文件上传到服务端是使用的scp，所以请在本地配置和远端配置好 私钥/公钥 以实现免密码登录
 
