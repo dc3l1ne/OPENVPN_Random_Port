@@ -6,7 +6,7 @@ sshport=122
 serverip=192.168.2.1
 clientip=192.168.2.2
 keyfile=s.key
-app='openvpn2.3.6'
+app='openvpn'
 salt='zM0miepRzgSk4yI8'
 ###
 function random_port_generator (){
@@ -25,10 +25,7 @@ comp-lzo
 verb 3
 redirect-gateway def1
 ;tun-mtu 7500
-obfs-salt $salt
-obfs-padlen 20
-mssfix 1386
-;scramble obfuscate $salt
+;scramble $salt
 EOF
 cat>server.conf<<EOF
 dev tun
@@ -44,10 +41,7 @@ status openvpn-status.log
 verb 3
 push "redirect-gateway def1"
 push "dhcp-option DNS 8.8.8.8"
-obfs-salt $salt
-obfs-padlen 20
-mssfix 1386
-;scramble obfuscate $salt
+;scramble $salt
 ;tun-mtu 7500
 EOF
 fi
